@@ -1,3 +1,5 @@
+from StockIndex import StockIndex
+
 data = open('files/NDX_D1.csv', 'r')
 
 firstLine = data.readline()
@@ -21,26 +23,14 @@ for column in metadata:
     if column == 'Close':
         index['close'] = metadata.index(column)
 
-# allTimeLow = 0.0
-allTimeHigh = 0.0
-allTimeHighDate = ''
 
-for line in data.readlines():
-    values = line.split(',')
+nasdaq = StockIndex(data.readlines(), ',', index['date'], index['open'], index['high'], index['low'], index['close'])
 
-    for i in range(len(values)):
+high = nasdaq.allTimeHigh()
+print(high)
 
-        if i == index['high']:
-            high = float(values[i])
-
-            if high > allTimeHigh:
-                allTimeHigh = high
-                allTimeHighDate = values[index['date']]
-
-
-
-
-print('all time high was ' + str(allTimeHigh) + ' on ' + allTimeHighDate)
+lowerHigherRatio = nasdaq.dailyLowerHigherRatio()
+print(lowerHigherRatio)
 
 data.close()
 
