@@ -31,31 +31,44 @@ class StockIndex:
                 'date': allTimeHighDate
             }
 
+
     def dailyLowerHigherRatio(self):
         dayCount = len(self.data)
 
-        lowerClose = 0
-        higherClose = 0
-        sameClose = 0
+        lowerCloseCount= 0
+        higherCloseCount = 0
+        sameCloseCount = 0
+        lowerCloseDifference = 0.0
+        higherCloseDifference = 0.0
 
         for line in self.data:
             values = line.split(self.separationChar)
 
-            if values[self.closeIndex] > values[self.openIndex]:
-                higherClose += 1
-            elif values[self.closeIndex] < values[self.openIndex]:
-                lowerClose += 1
-            else:
-                sameClose += 1
+            open = float(values[self.openIndex])
+            close = float(values[self.closeIndex])
 
-        if lowerClose + higherClose + sameClose == dayCount:
+            if close > open:
+                higherCloseCount += 1
+                diff = close - open
+                higherCloseDifference += diff
+            elif close < open:
+                lowerCloseCount += 1
+                diff = close - open
+                lowerCloseDifference += diff
+            else:
+                sameCloseCount += 1
+
+        if lowerCloseCount + higherCloseCount + sameCloseCount == dayCount:
             return {
-                'higherClose': higherClose,
-                'higherClosePct': higherClose / dayCount * 100.0,
-                'lowerClose': lowerClose,
-                'lowerClosePct': lowerClose / dayCount * 100.0,
-                'sameClose': sameClose,
-                'sameClosePct': sameClose / dayCount * 100.0
+                'higherClose': higherCloseCount,
+                'higherClosePct': higherCloseCount/ dayCount * 100.0,
+                'higherCloseAvg': higherCloseDifference / higherCloseCount,
+                'lowerClose': lowerCloseCount,
+                'lowerClosePct': lowerCloseCount/ dayCount * 100.0,
+                'lowerCloseAvg': lowerCloseDifference / lowerCloseCount,
+                'sameClose': sameCloseCount,
+                'sameClosePct': sameCloseCount/ dayCount * 100.0
             }
+
 
 
