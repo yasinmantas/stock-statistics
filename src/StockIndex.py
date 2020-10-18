@@ -82,17 +82,17 @@ class StockIndex:
             return {
                 'higherClose': {
                     'count': higherCloseCount,
-                    'pct': higherCloseCount/ dayCount * 100.0,
+                    'pct': higherCloseCount / dayCount * 100.0,
                     'avg': higherCloseDifference / higherCloseCount
                 },
                 'lowerClose': {
                     'count': lowerCloseCount,
-                    'pct': lowerCloseCount/ dayCount * 100.0,
+                    'pct': lowerCloseCount / dayCount * 100.0,
                     'avg': lowerCloseDifference / lowerCloseCount
                 },
                 'sameClose': {
                     'count': sameCloseCount,
-                    'pct': sameCloseCount/ dayCount * 100.0
+                    'pct': sameCloseCount / dayCount * 100.0
                 },
             }
 
@@ -206,3 +206,29 @@ class StockIndex:
             'low': lowest
         }
 
+
+    # def countNDaysInARow(self, n: int, down: bool):
+
+    #     for i in range(len(self.data)):
+    #         line = self.data[i]
+
+    #         values = line.split(self.separationChar)
+
+    #         found = 0
+
+    #         if (down):
+    #             if values[self.index['close']] < values[self.index['open']]:
+    #                 found += 1
+    #                 while found < n:
+    #                     j = i + 1
+    #                     nextLine = self.data[j]
+    #                     nextLineValues = nextLine.split(self.separationChar)
+    #                     if nextLineValues[self.index['close']] < nextLineValues[self.index['open']]:
+    #                         found += 1
+    #                         print(found)
+    #                     else:
+    #                         found = n
+    #                     j += 1
+
+    #         # else:
+    #         #     if values[self.index['close']] > values[self.index['open']]:
