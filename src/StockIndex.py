@@ -52,7 +52,6 @@ class StockIndex:
                 'date': allTimeHighDate
             }
 
-
     def dailyLowerHigherRatio(self):
         dayCount = len(self.data)
 
@@ -81,12 +80,18 @@ class StockIndex:
 
         if lowerCloseCount + higherCloseCount + sameCloseCount == dayCount:
             return {
-                'higherClose': higherCloseCount,
-                'higherClosePct': higherCloseCount/ dayCount * 100.0,
-                'higherCloseAvg': higherCloseDifference / higherCloseCount,
-                'lowerClose': lowerCloseCount,
-                'lowerClosePct': lowerCloseCount/ dayCount * 100.0,
-                'lowerCloseAvg': lowerCloseDifference / lowerCloseCount,
-                'sameClose': sameCloseCount,
-                'sameClosePct': sameCloseCount/ dayCount * 100.0
+                'higherClose': {
+                    'count': higherCloseCount,
+                    'pct': higherCloseCount/ dayCount * 100.0,
+                    'avg': higherCloseDifference / higherCloseCount
+                },
+                'lowerClose': {
+                    'count': lowerCloseCount,
+                    'pct': lowerCloseCount/ dayCount * 100.0,
+                    'avg': lowerCloseDifference / lowerCloseCount
+                },
+                'sameClose': {
+                    'count': sameCloseCount,
+                    'pct': sameCloseCount/ dayCount * 100.0
+                },
             }
