@@ -95,3 +95,114 @@ class StockIndex:
                     'pct': sameCloseCount/ dayCount * 100.0
                 },
             }
+
+    def maxDaysInARow(self):
+        higher = {
+            'count': 0,
+            'startDate': '',
+            'endDate': '',
+            'startValue': 0.0,
+            'endValue': 0.0,
+        }
+        lower = {
+            'count': 0,
+            'startDate': '',
+            'endDate': '',
+            'startValue': 0.0,
+            'endValue': 0.0,
+        }
+        highest = {
+            'count': 0,
+            'startDate': '',
+            'endDate': '',
+            'startValue': 0.0,
+            'endValue': 0.0,
+        }
+        lowest = {
+            'count': 0,
+            'startDate': '',
+            'endDate': '',
+            'startValue': 0.0,
+            'endValue': 0.0,
+        }
+
+        # detect first direction
+        firstLine = self.data[0]
+        firstValues = firstLine.split(self.separationChar)
+        firstOpen = float(firstValues[self.index['open']])
+        firstClose = float(firstValues[self.index['close']])
+
+        # opposite values to trigger first day recognition
+        if firstClose > firstOpen:
+            lastDayWasLow = True
+            lastDayWasHigh = False
+        elif firstClose < firstOpen:
+            lastDayWasHigh = True
+            lastDayWasLow = False
+
+        for line in self.data:
+            values = line.split(self.separationChar)
+            open = float(values[self.index['open']])
+            close = float(values[self.index['close']])
+            today = values[self.index['date']]
+
+            if close > open:
+                # first green day
+                if lastDayWasLow:
+                    # end red days counter
+                    if lower['count'] > lowest['count']:
+                        lowest['count'] = lower['count']
+                        lowest['startDate'] = lower['startDate']
+                        lowest['endDate'] = lower['endDate']
+                        lowest['startValue'] = lower['startValue']
+                        lowest['endValue'] = lower['endValue']
+                    lower['count'] = 0
+                    
+                    # start green days counter
+                    higher['count'] = 1
+                    higher['startDate'] = today
+                    higher['startValue'] = open
+
+                # consecutive green day
+                if lastDayWasHigh:
+                    # continue green days counter
+                    higher['count'] += 1
+                    higher['endDate'] = today
+                    higher['endValue'] = close
+
+                lastDayWasHigh = True
+                lastDayWasLow = False
+
+            # same same as above, but different
+            elif close < open:
+                # first red day
+                if lastDayWasHigh:
+                    # end green days counter
+                    if higher['count'] > highest['count']:
+                        highest['count'] = higher['count']
+                        highest['startDate'] = higher['startDate']
+                        highest['endDate'] = higher['endDate']
+                        highest['startValue'] = higher['startValue']
+                        highest['endValue'] = higher['endValue']
+                    higher['count'] = 0
+
+                    # start red days counter
+                    lower['count'] = 1
+                    lower['startDate'] = today
+                    lower['startValue'] = open
+
+                # consecutive red day
+                if lastDayWasLow:
+                    # continue red days counter
+                    lower['count'] += 1
+                    lower['endDate'] = today
+                    lower['endValue'] = close
+
+                lastDayWasLow = True
+                lastDayWasHigh = False
+
+        return {
+            'high': highest,
+            'low': lowest
+        }
+
