@@ -1,14 +1,35 @@
 class StockIndex:
 
-    #data should be a list
-    def __init__(self, data, separationChar, dateIndex, openIndex, highIndex, lowIndex, closeIndex):
-        self.data = data
+    def __init__(self, path: str, separationChar: str, dateString: str, openString: str, highString: str, lowString:str, closeString: str):
+        
+        self.file = open(path, 'r')
+
+        firstLine = self.file.readline()
+        metadata = firstLine.split(separationChar)
+        self.index = {
+            'date': -1,
+            'open': -1,
+            'high': -1,
+            'low': -1,
+            'close': -1,
+        }
+        for column in metadata:
+            if column == dateString:
+                self.index['date'] = metadata.index(column)
+            if column == openString:
+                self.index['open'] = metadata.index(column)
+            if column == highString:
+                self.index['high'] = metadata.index(column)
+            if column == lowString:
+                self.index['low'] = metadata.index(column)
+            if column == closeString:
+                self.index['close'] = metadata.index(column)
+
+        self.data = self.file.readlines()
         self.separationChar = separationChar
-        self.dateIndex = dateIndex
-        self.openIndex = openIndex
-        self.highIndex = highIndex
-        self.lowIndex = lowIndex
-        self.closeIndex = closeIndex
+
+    def __del__(self):
+        self.file.close()
 
     def allTimeHigh(self):
         allTimeHigh = 0.0
@@ -18,12 +39,12 @@ class StockIndex:
             values = line.split(self.separationChar)
             for i in range(len(values)):
 
-                if i == self.highIndex:
+                if i == self.index['high']:
                     high = float(values[i])
 
                     if high > allTimeHigh:
                         allTimeHigh = high
-                        allTimeHighDate = values[self.dateIndex]
+                        allTimeHighDate = values[self.index['date']]
 
         if allTimeHigh != 0.0 and allTimeHighDate != '':
             return {
@@ -35,7 +56,7 @@ class StockIndex:
     def dailyLowerHigherRatio(self):
         dayCount = len(self.data)
 
-        lowerCloseCount= 0
+        lowerCloseCount = 0
         higherCloseCount = 0
         sameCloseCount = 0
         lowerCloseDifference = 0.0
@@ -44,8 +65,8 @@ class StockIndex:
         for line in self.data:
             values = line.split(self.separationChar)
 
-            open = float(values[self.openIndex])
-            close = float(values[self.closeIndex])
+            open = float(values[self.index['open']])
+            close = float(values[self.index['close']])
 
             if close > open:
                 higherCloseCount += 1
@@ -69,6 +90,3 @@ class StockIndex:
                 'sameClose': sameCloseCount,
                 'sameClosePct': sameCloseCount/ dayCount * 100.0
             }
-
-
-
