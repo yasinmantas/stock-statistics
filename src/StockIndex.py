@@ -37,14 +37,12 @@ class StockIndex:
 
         for line in self.data:
             values = line.split(self.separationChar)
-            for i in range(len(values)):
+            high = float(values[self.index['high']])
+            date = values[self.index['date']]
 
-                if i == self.index['high']:
-                    high = float(values[i])
-
-                    if high > allTimeHigh:
-                        allTimeHigh = high
-                        allTimeHighDate = values[self.index['date']]
+            if high > allTimeHigh:
+                allTimeHigh = high
+                allTimeHighDate = date
 
         if allTimeHigh != 0.0 and allTimeHighDate != '':
             return {
