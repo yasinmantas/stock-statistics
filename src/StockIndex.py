@@ -1,7 +1,7 @@
 class StockIndex:
 
-    def __init__(self, path: str, separationChar: str, dateString: str, openString: str, highString: str, lowString:str, closeString: str):
-        
+    def __init__(self, path: str, separationChar: str = ',', dateString: str = 'Date', openString: str = 'Open', highString: str = 'High', lowString: str = 'Low', closeString: str = 'Close'):
+
         self.file = open(path, 'r')
 
         firstLine = self.file.readline()
