@@ -204,7 +204,16 @@ class StockIndex:
             'low': lowest
         }
 
-    def dayAfterTwoDaysRatio(self):
+
+    def dayAfterNDaysRatio(self, n: int, down: bool = True):
+        """
+        Looks for N up/down days in a row and evaluates the following day
+
+        Keyword arguments:
+        n -- number of days in a row
+        down -- whether to look for lower (True) or higher (false) closing days. Lower is default.
+        """
+
         # counters
         occurrence = 0
         higherCount = 0
@@ -214,56 +223,72 @@ class StockIndex:
         higherTotal = 0.0
         lowerTotal = 0.0
 
-
         length = len(self.data)
-        for i in range(2, length):
-            # current value
-            values = self.data[i].split(self.separationChar)
-            open = float(values[self.index['open']])
-            close = float(values[self.index['close']])
-            currentHigher = close > open
-            currentLower = close < open
+        # starting at n instead of 0 because n days in a row are checked backwards
+        for i in range(n, length):
+            # values of current row
+            currentValues = self.data[i].split(self.separationChar)
+            currentOpen = float(currentValues[self.index['open']])
+            currentClose = float(currentValues[self.index['close']])
+            currentHigher = currentClose > currentOpen
+            currentLower = currentClose < currentOpen
 
-            # previous value (-1)
-            previousValues = self.data[i-1].split(self.separationChar)
-            previousOpen = float(previousValues[self.index['open']])
-            previousClose = float(previousValues[self.index['close']])
-            # previousHigher = previousClose > previousOpen
-            previousLower = previousClose < previousOpen
-            
-            # previous value (-2)
-            previousValues2 = self.data[i-2].split(self.separationChar)
-            previousOpen2 = float(previousValues2[self.index['open']])
-            previousClose2 = float(previousValues2[self.index['close']])
-            # previousHigher2 = previousClose2 > previousOpen2
-            previousLower2 = previousClose2 < previousOpen2
-            
+            # master boolean; indicates whether all previous n days match criteria
+            allNPreviousDaysMatch = True
 
-            if previousLower2 and previousLower:
+            # iterate through n previous days
+            for j in range(1, n + 1):
+                previousValues = self.data[i-j].split(self.separationChar)
+                previousOpen = float(previousValues[self.index['open']])
+                previousClose = float(previousValues[self.index['close']])
+                previousLower = previousClose < previousOpen
+                previousHigher = previousClose > previousOpen
+
+                # n days down requested (default)
+                if down:
+                    if allNPreviousDaysMatch and previousLower:
+                        allNPreviousDaysMatch = True
+                    else:
+                        allNPreviousDaysMatch = False
+                # n days up requested
+                else:
+                    if allNPreviousDaysMatch and previousHigher:
+                        allNPreviousDaysMatch = True
+                    else:
+                        allNPreviousDaysMatch = False
+
+            # count only if all n days match criteria
+            if allNPreviousDaysMatch:
                 occurrence += 1
                 if currentHigher:
                     higherCount += 1
-                    higherTotal += close - open
+                    higherTotal += currentClose - currentOpen
                 elif currentLower:
                     lowerCount += 1
-                    lowerTotal += open - close
+                    lowerTotal += currentOpen - currentClose
                 else:
                     sameCount += 1
-        
-        return {
-            'occurrence': occurrence,
-            'higher': {
-                'count': higherCount,
-                'pct': higherCount / occurrence,
-                'avg': higherTotal / higherCount
-            },
-            'lower': {
-                'count': lowerCount,
-                'pct': lowerCount / occurrence,
-                'avg': lowerTotal / lowerCount
-            },
-            'same': {
-                'count': sameCount,
-                'pct': sameCount / occurrence
+
+        if occurrence != 0:
+            return {
+                'down': True if down else False,
+                'occurrence': occurrence,
+                'higher': {
+                    'count': higherCount,
+                    'pct': higherCount / occurrence,
+                    'avg': higherTotal / higherCount
+                },
+                'lower': {
+                    'count': lowerCount,
+                    'pct': lowerCount / occurrence,
+                    'avg': lowerTotal / lowerCount
+                },
+                'same': {
+                    'count': sameCount,
+                    'pct': sameCount / occurrence
+                }
             }
-        }
+        else:
+            return {
+                'occurrence': occurrence
+            }
