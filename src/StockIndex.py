@@ -80,17 +80,17 @@ class StockIndex:
             return {
                 'higherClose': {
                     'count': higherCloseCount,
-                    'pct': higherCloseCount / dayCount * 100.0,
+                    'pct': higherCloseCount / dayCount,
                     'avg': higherCloseDifference / higherCloseCount
                 },
                 'lowerClose': {
                     'count': lowerCloseCount,
-                    'pct': lowerCloseCount / dayCount * 100.0,
+                    'pct': lowerCloseCount / dayCount,
                     'avg': lowerCloseDifference / lowerCloseCount
                 },
                 'sameClose': {
                     'count': sameCloseCount,
-                    'pct': sameCloseCount / dayCount * 100.0
+                    'pct': sameCloseCount / dayCount
                 },
             }
 
@@ -204,29 +204,66 @@ class StockIndex:
             'low': lowest
         }
 
+    def dayAfterTwoDaysRatio(self):
+        # counters
+        occurrence = 0
+        higherCount = 0
+        lowerCount = 0
+        sameCount = 0
+        # total points (to calculate averages)
+        higherTotal = 0.0
+        lowerTotal = 0.0
 
-    # def countNDaysInARow(self, n: int, down: bool):
 
-    #     for i in range(len(self.data)):
-    #         line = self.data[i]
+        length = len(self.data)
+        for i in range(2, length):
+            # current value
+            values = self.data[i].split(self.separationChar)
+            open = float(values[self.index['open']])
+            close = float(values[self.index['close']])
+            currentHigher = close > open
+            currentLower = close < open
 
-    #         values = line.split(self.separationChar)
+            # previous value (-1)
+            previousValues = self.data[i-1].split(self.separationChar)
+            previousOpen = float(previousValues[self.index['open']])
+            previousClose = float(previousValues[self.index['close']])
+            # previousHigher = previousClose > previousOpen
+            previousLower = previousClose < previousOpen
+            
+            # previous value (-2)
+            previousValues2 = self.data[i-2].split(self.separationChar)
+            previousOpen2 = float(previousValues2[self.index['open']])
+            previousClose2 = float(previousValues2[self.index['close']])
+            # previousHigher2 = previousClose2 > previousOpen2
+            previousLower2 = previousClose2 < previousOpen2
+            
 
-    #         found = 0
-
-    #         if (down):
-    #             if values[self.index['close']] < values[self.index['open']]:
-    #                 found += 1
-    #                 while found < n:
-    #                     j = i + 1
-    #                     nextLine = self.data[j]
-    #                     nextLineValues = nextLine.split(self.separationChar)
-    #                     if nextLineValues[self.index['close']] < nextLineValues[self.index['open']]:
-    #                         found += 1
-    #                         print(found)
-    #                     else:
-    #                         found = n
-    #                     j += 1
-
-    #         # else:
-    #         #     if values[self.index['close']] > values[self.index['open']]:
+            if previousLower2 and previousLower:
+                occurrence += 1
+                if currentHigher:
+                    higherCount += 1
+                    higherTotal += close - open
+                elif currentLower:
+                    lowerCount += 1
+                    lowerTotal += open - close
+                else:
+                    sameCount += 1
+        
+        return {
+            'occurrence': occurrence,
+            'higher': {
+                'count': higherCount,
+                'pct': higherCount / occurrence,
+                'avg': higherTotal / higherCount
+            },
+            'lower': {
+                'count': lowerCount,
+                'pct': lowerCount / occurrence,
+                'avg': lowerTotal / lowerCount
+            },
+            'same': {
+                'count': sameCount,
+                'pct': sameCount / occurrence
+            }
+        }
