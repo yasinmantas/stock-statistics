@@ -115,6 +115,7 @@ class StockIndex:
             'endDate': '',
             'startValue': 0.0,
             'endValue': 0.0,
+            'difference': 0.0,
         }
         lowest = {
             'count': 0,
@@ -122,6 +123,7 @@ class StockIndex:
             'endDate': '',
             'startValue': 0.0,
             'endValue': 0.0,
+            'difference': 0.0,
         }
 
         # detect first direction
@@ -154,6 +156,7 @@ class StockIndex:
                         lowest['endDate'] = lower['endDate']
                         lowest['startValue'] = lower['startValue']
                         lowest['endValue'] = lower['endValue']
+                        lowest['difference'] = lowest['endValue'] - lowest['startValue']
                     lower['count'] = 0
                     
                     # start green days counter
@@ -182,6 +185,7 @@ class StockIndex:
                         highest['endDate'] = higher['endDate']
                         highest['startValue'] = higher['startValue']
                         highest['endValue'] = higher['endValue']
+                        highest['difference'] = highest['endValue'] - highest['startValue']
                     higher['count'] = 0
 
                     # start red days counter
