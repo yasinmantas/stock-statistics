@@ -1,4 +1,3 @@
-files/
 src/__pycache__
 .vscode/
 credentials.json
