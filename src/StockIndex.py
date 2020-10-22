@@ -146,6 +146,7 @@ class StockIndex:
             close = float(values[self.index['close']])
             today = values[self.index['date']]
 
+            # TODO same close does not break streak (should it?)
             if close > open:
                 # first green day
                 if lastDayWasLow:
@@ -285,7 +286,7 @@ class StockIndex:
                 'lower': {
                     'count': lowerCount,
                     'pct': lowerCount / occurrence,
-                    'avg': lowerTotal / lowerCount
+                    'avg': - lowerTotal / lowerCount
                 },
                 'same': {
                     'count': sameCount,
