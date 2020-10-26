@@ -5,44 +5,56 @@ import sheets
 n = 2
 down = True
 
-# chaos for now TODO cleanup
+# TODO cleanup
 firstRow = []
 firstRow.append('Time period')
-firstRow.append('ATH')
+#
+firstRow.append('Highest Points')
 firstRow.append('Date')
+#
 firstRow.append('Closes higher')
 firstRow.append('Pct.')
-firstRow.append('Avg. points')
+firstRow.append('Avg. gain in pct')
+firstRow.append('Avg. gain in points')
+#
 firstRow.append('Closes lower')
 firstRow.append('Pct.')
-firstRow.append('Avg. points')
-firstRow.append('Closes same')
+firstRow.append('Avg. loss in pct')
+firstRow.append('Avg. loss in points')
+#
+firstRow.append('Closes unchanged')
 firstRow.append('Pct.')
+#
 firstRow.append('Most consecutive higher days')
 firstRow.append('From date')
 firstRow.append('to date')
 firstRow.append('From points')
 firstRow.append('to points')
 firstRow.append('Difference')
+#
 firstRow.append('Most consecutive lower days')
 firstRow.append('From date')
 firstRow.append('to date')
 firstRow.append('From points')
 firstRow.append('to points')
 firstRow.append('Difference')
+#
 firstRow.append(str(n) + ' days ' + ('down' if down else 'up' ) + ' in a row') # TODO make dynamic
 firstRow.append('Higher the day after')
 firstRow.append('Pct.')
-firstRow.append('Avg.')
+firstRow.append('Avg. gain in pct')
+firstRow.append('Avg. gain in points')
 firstRow.append('Lower the day after')
 firstRow.append('Pct.')
-firstRow.append('Avg.')
+firstRow.append('Avg. loss in pct')
+firstRow.append('Avg. loss in points')
 firstRow.append('Same the day after')
 firstRow.append('Pct.')
 
 allDataRows = []
 
 timePeriods = ['total', '85-89', '90-94', '95-99', '00-04', '05-09', '10-14', '15-19']
+# timePeriods = ['total']
 
 for period in timePeriods:
     if period == 'total':
@@ -73,9 +85,11 @@ for period in timePeriods:
     data.append(high['date'])
     data.append(lowerHigherRatio['higherClose']['count'])
     data.append(lowerHigherRatio['higherClose']['pct'])
+    data.append(lowerHigherRatio['higherClose']['diff'])
     data.append(lowerHigherRatio['higherClose']['avg'])
     data.append(lowerHigherRatio['lowerClose']['count'])
     data.append(lowerHigherRatio['lowerClose']['pct'])
+    data.append(lowerHigherRatio['lowerClose']['diff'])
     data.append(lowerHigherRatio['lowerClose']['avg'])
     data.append(lowerHigherRatio['sameClose']['count'])
     data.append(lowerHigherRatio['sameClose']['pct'])
@@ -94,9 +108,11 @@ for period in timePeriods:
     data.append(nDays['occurrence'])
     data.append(nDays['higher']['count'])
     data.append(nDays['higher']['pct'])
+    data.append(nDays['higher']['diff'])
     data.append(nDays['higher']['avg'])
     data.append(nDays['lower']['count'])
     data.append(nDays['lower']['pct'])
+    data.append(nDays['lower']['diff'])
     data.append(nDays['lower']['avg'])
     data.append(nDays['same']['count'])
     data.append(nDays['same']['pct'])

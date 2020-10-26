@@ -57,7 +57,9 @@ class StockIndex:
         higherCloseCount = 0
         sameCloseCount = 0
         lowerCloseDifference = 0.0
+        lowerCloseDiffPct = 0.0
         higherCloseDifference = 0.0
+        higherCloseDiffPct = 0.0
 
         for line in self.data:
             values = line.split(self.separationChar)
@@ -65,14 +67,17 @@ class StockIndex:
             open = float(values[self.index['open']])
             close = float(values[self.index['close']])
 
+            diff = close - open
+            diffPct = (close / open) - 1
+
             if close > open:
                 higherCloseCount += 1
-                diff = close - open
                 higherCloseDifference += diff
+                higherCloseDiffPct += diffPct
             elif close < open:
                 lowerCloseCount += 1
-                diff = close - open
                 lowerCloseDifference += diff
+                lowerCloseDiffPct += diffPct
             else:
                 sameCloseCount += 1
 
@@ -81,12 +86,14 @@ class StockIndex:
                 'higherClose': {
                     'count': higherCloseCount,
                     'pct': higherCloseCount / dayCount,
-                    'avg': higherCloseDifference / higherCloseCount
+                    'avg': higherCloseDifference / higherCloseCount,
+                    'diff': higherCloseDiffPct / higherCloseCount
                 },
                 'lowerClose': {
                     'count': lowerCloseCount,
                     'pct': lowerCloseCount / dayCount,
-                    'avg': lowerCloseDifference / lowerCloseCount
+                    'avg': lowerCloseDifference / lowerCloseCount,
+                    'diff': lowerCloseDiffPct / lowerCloseCount
                 },
                 'sameClose': {
                     'count': sameCloseCount,
@@ -209,7 +216,6 @@ class StockIndex:
             'low': lowest
         }
 
-
     def dayAfterNDaysRatio(self, n: int, down: bool = True):
         """
         Looks for N up/down days in a row and evaluates the following day
@@ -224,9 +230,13 @@ class StockIndex:
         higherCount = 0
         lowerCount = 0
         sameCount = 0
-        # total points (to calculate averages)
+        # for avg calc
+        # total difference in points
         higherTotal = 0.0
         lowerTotal = 0.0
+        # total difference in pct
+        higherPctTotal = 0.0
+        lowerPctTotal = 0.0
 
         length = len(self.data)
         # starting at n instead of 0 because n days in a row are checked backwards
@@ -268,9 +278,11 @@ class StockIndex:
                 if currentHigher:
                     higherCount += 1
                     higherTotal += currentClose - currentOpen
+                    higherPctTotal += (currentClose / currentOpen) - 1
                 elif currentLower:
                     lowerCount += 1
                     lowerTotal += currentOpen - currentClose
+                    lowerPctTotal += (currentClose / currentOpen) - 1
                 else:
                     sameCount += 1
 
@@ -281,12 +293,14 @@ class StockIndex:
                 'higher': {
                     'count': higherCount,
                     'pct': higherCount / occurrence,
-                    'avg': higherTotal / higherCount
+                    'avg': higherTotal / higherCount,
+                    'diff': higherPctTotal / higherCount
                 },
                 'lower': {
                     'count': lowerCount,
                     'pct': lowerCount / occurrence,
-                    'avg': - lowerTotal / lowerCount
+                    'avg': - lowerTotal / lowerCount,
+                    'diff': lowerPctTotal / lowerCount
                 },
                 'same': {
                     'count': sameCount,

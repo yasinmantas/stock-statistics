@@ -7,6 +7,6 @@ sh = gc.open_by_key(config.googleSheets['url'])
 
 
 def insertIntoWorksheet(worksheetName, firstRow, data):
-    worksheet = sh.add_worksheet(worksheetName, 100, 100, 1)
+    worksheet = sh.add_worksheet(worksheetName, 100, 100, 0)
     worksheet.insert_row(firstRow)
     worksheet.insert_rows(data, 2)
