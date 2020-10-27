@@ -12,6 +12,12 @@ firstRow.append('Time period')
 firstRow.append('Highest Points')
 firstRow.append('Date')
 #
+firstRow.append('Most gain in pct.')
+firstRow.append('Date')
+#
+firstRow.append('Most loss in pct.')
+firstRow.append('Date')
+#
 firstRow.append('Closes higher')
 firstRow.append('Pct.')
 firstRow.append('Avg. gain in pct')
@@ -71,6 +77,8 @@ for period in timePeriods:
     consecutiveDays = nasdaq.maxDaysInARow()
     # pprint.pprint(consecutiveDays)
 
+    maxDailyChange = nasdaq.maxDailyChange()
+
     '''
     TODO: check if function dailyLowerHigherRatio() has become redundant
     -> dayAfterNDaysRatio with n = 0 returns same result
@@ -83,6 +91,10 @@ for period in timePeriods:
     data.append(period)
     data.append(high['value'])
     data.append(high['date'])
+    data.append(maxDailyChange['up']['pct'])
+    data.append(maxDailyChange['up']['date'])
+    data.append(maxDailyChange['down']['pct'])
+    data.append(maxDailyChange['down']['date'])
     data.append(lowerHigherRatio['higherClose']['count'])
     data.append(lowerHigherRatio['higherClose']['pct'])
     data.append(lowerHigherRatio['higherClose']['diff'])
