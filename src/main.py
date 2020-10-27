@@ -2,10 +2,6 @@ from StockIndex import StockIndex
 import pprint
 import sheets
 
-# n = 2
-down = True
-nValues = [ 1, 2, 3, 4, 5 ]
-
 # TODO cleanup
 firstRow = []
 firstRow.append('Time period')
@@ -46,8 +42,10 @@ firstRow.append('From points')
 firstRow.append('to points')
 firstRow.append('Difference')
 #
+# TODO set upper limit dynamically?
+nValues = [(1, True), (2, True), (3, True), (4, True), (5, True), (1, False), (2, False), (3, False), (4, False), (5, False) ]
 for n in nValues:
-    firstRow.append(str(n) + ' days ' + ('down' if down else 'up' ) + ' in a row') # TODO make dynamic
+    firstRow.append(str(n[0]) + ' days ' + ('down' if n[1] else 'up' ) + ' in a row') # TODO make dynamic
     firstRow.append('Higher the day after')
     firstRow.append('Pct.')
     firstRow.append('Avg. gain in pct')
@@ -113,9 +111,8 @@ for period in timePeriods:
     data.append(consecutiveDays['low']['endValue'])
     data.append(consecutiveDays['low']['difference'])
 
-
     for n in nValues:
-        nDays = nasdaq.dayAfterNDaysRatio(n, down)
+        nDays = nasdaq.dayAfterNDaysRatio(n[0], n[1])
         # pprint.pprint(nDays)
 
         data.append(nDays['occurrence'])
