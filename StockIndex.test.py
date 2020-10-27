@@ -46,6 +46,17 @@ class TestStockIndex(unittest.TestCase):
         self.assertEqual(nDays['low']['startValue'], 117)
         self.assertEqual(nDays['low']['endValue'], 107)
 
+    def test_maxDailyChange(self):
+        testData = StockIndex('C:/Users/Yasin/Documents/stock-statistics/test/fixture/testdata.csv')
+
+        res = testData.maxDailyChange()
+
+        self.assertAlmostEqual(res['up']['pct'], 5.36 / 100, 3)
+        self.assertEqual(res['up']['date'], '2020-10-16')
+
+        self.assertAlmostEqual(res['down']['pct'], -6.5 / 100, 3)
+        self.assertEqual(res['down']['date'], '2020-10-23')
+
     def test_dayAfterNDaysRatio(self):
         testData = StockIndex('C:/Users/Yasin/Documents/stock-statistics/test/fixture/testdata.csv')
 

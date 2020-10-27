@@ -216,6 +216,38 @@ class StockIndex:
             'low': lowest
         }
 
+    def maxDailyChange(self):
+        maxIncreasePct = 0.0
+        maxIncreaseDate = ''
+        maxDecreasePct = 0.0
+        maxDecreaseDate = ''
+
+        for line in self.data:
+            values = line.split(self.separationChar)
+            open = float(values[self.index['open']])
+            close = float(values[self.index['close']])
+            date = values[self.index['date']]
+
+            changePct = (close / open) - 1
+
+            if close > open and changePct > maxIncreasePct:
+                maxIncreasePct = changePct
+                maxIncreaseDate = date
+            if close < open and changePct < maxDecreasePct:
+                maxDecreasePct = changePct
+                maxDecreaseDate = date
+
+        return {
+            'up': {
+                'pct': maxIncreasePct,
+                'date': maxIncreaseDate,
+            },
+            'down': {
+                'pct': maxDecreasePct,
+                'date': maxDecreaseDate,
+            }
+        }
+
     def dayAfterNDaysRatio(self, n: int, down: bool = True):
         """
         Looks for N up/down days in a row and evaluates the following day
