@@ -2,8 +2,9 @@ from StockIndex import StockIndex
 import pprint
 import sheets
 
-n = 2
+# n = 2
 down = True
+nValues = [ 1, 2, 3, 4, 5 ]
 
 # TODO cleanup
 firstRow = []
@@ -45,17 +46,18 @@ firstRow.append('From points')
 firstRow.append('to points')
 firstRow.append('Difference')
 #
-firstRow.append(str(n) + ' days ' + ('down' if down else 'up' ) + ' in a row') # TODO make dynamic
-firstRow.append('Higher the day after')
-firstRow.append('Pct.')
-firstRow.append('Avg. gain in pct')
-firstRow.append('Avg. gain in points')
-firstRow.append('Lower the day after')
-firstRow.append('Pct.')
-firstRow.append('Avg. loss in pct')
-firstRow.append('Avg. loss in points')
-firstRow.append('Same the day after')
-firstRow.append('Pct.')
+for n in nValues:
+    firstRow.append(str(n) + ' days ' + ('down' if down else 'up' ) + ' in a row') # TODO make dynamic
+    firstRow.append('Higher the day after')
+    firstRow.append('Pct.')
+    firstRow.append('Avg. gain in pct')
+    firstRow.append('Avg. gain in points')
+    firstRow.append('Lower the day after')
+    firstRow.append('Pct.')
+    firstRow.append('Avg. loss in pct')
+    firstRow.append('Avg. loss in points')
+    firstRow.append('Same the day after')
+    firstRow.append('Pct.')
 
 allDataRows = []
 
@@ -78,13 +80,6 @@ for period in timePeriods:
     # pprint.pprint(consecutiveDays)
 
     maxDailyChange = nasdaq.maxDailyChange()
-
-    '''
-    TODO: check if function dailyLowerHigherRatio() has become redundant
-    -> dayAfterNDaysRatio with n = 0 returns same result
-    '''
-    nDays = nasdaq.dayAfterNDaysRatio(n, down)
-    # pprint.pprint(nDays)
 
 
     data = []
@@ -117,21 +112,27 @@ for period in timePeriods:
     data.append(consecutiveDays['low']['startValue'])
     data.append(consecutiveDays['low']['endValue'])
     data.append(consecutiveDays['low']['difference'])
-    data.append(nDays['occurrence'])
-    data.append(nDays['higher']['count'])
-    data.append(nDays['higher']['pct'])
-    data.append(nDays['higher']['diff'])
-    data.append(nDays['higher']['avg'])
-    data.append(nDays['lower']['count'])
-    data.append(nDays['lower']['pct'])
-    data.append(nDays['lower']['diff'])
-    data.append(nDays['lower']['avg'])
-    data.append(nDays['same']['count'])
-    data.append(nDays['same']['pct'])
+
+
+    for n in nValues:
+        nDays = nasdaq.dayAfterNDaysRatio(n, down)
+        # pprint.pprint(nDays)
+
+        data.append(nDays['occurrence'])
+        data.append(nDays['higher']['count'])
+        data.append(nDays['higher']['pct'])
+        data.append(nDays['higher']['diff'])
+        data.append(nDays['higher']['avg'])
+        data.append(nDays['lower']['count'])
+        data.append(nDays['lower']['pct'])
+        data.append(nDays['lower']['diff'])
+        data.append(nDays['lower']['avg'])
+        data.append(nDays['same']['count'])
+        data.append(nDays['same']['pct'])
 
     allDataRows.append(data)
 
-# print(allDataRows)
+# pprint.pprint(allDataRows)
 
 
 sheets.insertIntoWorksheet('NASDAQ', firstRow, allDataRows)

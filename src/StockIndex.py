@@ -248,6 +248,7 @@ class StockIndex:
             }
         }
 
+    # TODO: check if function dailyLowerHigherRatio() has become redundant -> dayAfterNDaysRatio with n = 0 returns same result
     def dayAfterNDaysRatio(self, n: int, down: bool = True):
         """
         Looks for N up/down days in a row and evaluates the following day
